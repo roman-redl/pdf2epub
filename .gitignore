@@ -1,0 +1,8 @@
+.venv/
+.venv2/
+work/
+out/
+books/
+__pycache__/
+*.log
+.DS_Store
