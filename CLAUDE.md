@@ -11,6 +11,14 @@ diagnostics (`scripts/diagnose.py`) → [photo book: `scripts/preprocess_pdf.py`
 → manual markdown polish (headings/cleanup, see `scripts/fix_toc.py` as an
 example) → EPUB assembly (`scripts/assemble_epub.py`, calls `ebook-convert`).
 
+**Sample before a full run (mandatory):** once the pipeline is tuned on
+trial pages, build a SAMPLE-EPUB from the **first ~25 pages of the book in
+sequence** (not scattered "representative" pages: the user reads the sample
+linearly and checks it against the PDF page by page — they cannot jump
+around the book as easily as the agent). Hand the file to the user for
+review in a reader (ReadEra: night mode, highlighting, reflow). A full run
+only after the user's explicit approval, never by default.
+
 ## Pitfalls (all verified the hard way, 2026-09-09)
 
 - **marker 2.0 on Mac dies on long runs** — MPS bug
@@ -43,6 +51,15 @@ the decorative title pages with full-page renders.
 
 ## Rules
 
+- **Books whose content is mostly bright full-page images (atlases, photo
+  books): stop BEFORE setting up the pipeline.** EPUB night mode recolors
+  text only; maps/photos stay white over half the screen — a dark theme is
+  fundamentally impossible, reflow does not help. Ask the user whether an
+  EPUB is needed at all; alternatives: a PDF reader with full-page inversion
+  (KOReader, Librera) or local PDF pre-inversion (render pages → invert
+  brightness → reassemble the PDF). Case: History of the World Map by Map,
+  2026-09-28 — dropped after the sample; user verdict: "converting such a
+  book will turn out poorly".
 - **File changes — Write/Edit tools only**, never `cat >`/python heredocs in
   Bash: diffs must be visible in the CLI and go through approval. Exception —
   programmatic transformation of large generated files: announce it explicitly
@@ -50,7 +67,8 @@ the decorative title pages with full-page renders.
 - No clouds: local models and Calibre only.
 - Never commit files from `books/` (gitignored, copyright).
 - Before running a whole book — a 3–5 page trial (`--page_range`) and a
-  text-quality check against the source.
+  text-quality check against the source; then a sample EPUB for the user's
+  approval (see Pipeline) — full run only after an explicit "ок".
 - Self-checks: contiguous chunk coverage, image refs set == files set, spot
   page checks via vision MCP (note: the content filter may block this book
   topic — then verify via captions in the text).
