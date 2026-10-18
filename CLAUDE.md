@@ -64,6 +64,8 @@ the decorative title pages with full-page renders.
   Bash: diffs must be visible in the CLI and go through approval. Exception —
   programmatic transformation of large generated files: announce it explicitly
   and show a change summary. (2026-09-09)
+- Commit messages: English, text only — no auto-added trailers
+  (`Co-Authored-By: …`, "Generated with …").
 - No clouds: local models and Calibre only.
 - Never commit files from `books/` (gitignored, copyright).
 - Before running a whole book — a 3–5 page trial (`--page_range`) and a
