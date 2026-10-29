@@ -34,9 +34,9 @@ PAGE:") that break apart in reflow. Workflow:
 
 1. `scripts/extract_elements.py` → page-by-page inventory: photos + text units
    with byte offsets.
-2. Vision pass over every photo (`mcp__zai-mcp-server__analyze_image`): a
-   one-sentence description of what is depicted. ~2K tokens/image; the content
-   filter rejects ~1% of photos on this topic — those fall back to geometry.
+2. Vision pass over every photo: a one-sentence description of what is
+   depicted. A photo left without a description is matched to captions by
+   page position (offsets from step 1), not by content.
 3. Manual semantic matching, **verified-only policy**: rebind a caption to a
    photo only when the vision description and the caption text clearly agree.
    Ambiguous → leave the old order. A wrong binding is worse than a distant one.
@@ -51,7 +51,8 @@ PAGE:") that break apart in reflow. Workflow:
 6. Test the CSS probe first (`scripts/probe_figures.py` + `figure.css` with
    `break-inside: avoid`) in the target reader before running the whole pass.
 
-Cost estimate: ~1 photo ≈ 2K vision tokens + a few seconds, so budget
+Cost estimate: ~1 photo ≈ one vision call (~2K tokens with the author's tool)
++ a few seconds, so budget
 accordingly for the book size (e.g. ~350 photos ≈ 0.7–1M tokens + 1–1.5 h).
 Book-specific artifacts (descriptions, pairs) stay in `work/` — not committed.
 

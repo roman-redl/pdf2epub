@@ -1,6 +1,7 @@
 # CLAUDE.md — pdf2epub
 
-Local PDF → EPUB pipeline (Surya OCR + Calibre). Input: scanned/photographed
+Local PDF → EPUB pipeline (Surya OCR + Calibre). macOS-only toolchain
+(marker/Surya on Apple Silicon; see Pitfalls). Input: scanned/photographed
 PDFs in `books/`, output: EPUBs in `out/`. Intermediates live in `work/`
 (gitignored).
 
@@ -22,10 +23,11 @@ only after the user's explicit approval, never by default.
 ## Pitfalls (all verified the hard way, 2026-09-09)
 
 - **marker 2.0 on Mac dies on long runs** — MPS bug
-  (github.com/datalab-to/marker issue #960): short runs fly, a full file hangs
+  (github.com/datalab-to/marker issue #960, still open): short runs fly, a full file hangs
   (CPU freezes, no errors in the log). Solution: chunks of ~24 pages only via
   `run_chunks.zsh` (it also does timeout-kill, zombie cleanup, chunk halving,
-  resume via `.done` markers).
+  resume via `.done` markers). Note: marker 2.1.0 (2026-10-29) swapped the
+  Surya engine — retest the workaround once on a real book.
 - **The auxiliary ocr_error model pulls its checkpoint from Amazon S3** — the
   connection can hang in CLOSE_WAIT for hours. Models are already cached →
   always run with `HF_HUB_OFFLINE=1`.
@@ -64,8 +66,8 @@ the decorative title pages with full-page renders.
   Bash: diffs must be visible in the CLI and go through approval. Exception —
   programmatic transformation of large generated files: announce it explicitly
   and show a change summary. (2026-09-09)
-- Commit messages: English, text only — no auto-added trailers
-  (`Co-Authored-By: …`, "Generated with …").
+- Commit messages: English, conventional prefix (`feat:`, `fix:`, `docs:` …),
+  text only — no auto-added trailers (`Co-Authored-By: …`, "Generated with …").
 - No clouds: local models and Calibre only.
 - Never commit files from `books/` (gitignored, copyright).
 - Before running a whole book — a 3–5 page trial (`--page_range`) and a
